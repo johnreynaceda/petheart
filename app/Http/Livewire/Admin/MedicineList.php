@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Admin;
 
+use App\Models\MedicineCategory;
 use Livewire\Component;
 
 use App\Models\Medicine;
@@ -32,7 +33,7 @@ class MedicineList extends Component implements Tables\Contracts\HasTable
             ViewColumn::make('status')->label('NAME')->view('admin.filament.medicine')->searchable('name'),
             Tables\Columns\TextColumn::make('description')->label('DESCRIPTION')->searchable(),
             ViewColumn::make('stocks')->label('SIZE PER STOCKS')->view('admin.filament.stocks'),
-            Tables\Columns\TextColumn::make('category')->label('CATEGORY')->searchable(),
+            Tables\Columns\TextColumn::make('medicine_category.name')->label('CATEGORY')->searchable(),
         ];
     }
 
@@ -63,13 +64,13 @@ class MedicineList extends Component implements Tables\Contracts\HasTable
                                     TextInput::make('serial_code')->required()->default($record->serial_code),
                                     TextInput::make('description')->required()->default($record->description),
                                     TextInput::make('price')->required()->numeric()->default($record->price),
-                                    Select::make('category')->label('Category')->default($record->category)
+                                    Select::make('medicine_category.name')->label('Category')->default($record->category)
                                         ->options([
                                             'Antibiotic' => 'Antibiotic',
                                             'reviewing' => 'Reviewing',
                                             'published' => 'Published',
                                         ]),
-                                    TextInput::make('as_whole')->label('Stocks as whole')->required()->placeholder('boxes, bottles, etc.')->default($record->stock_as_whole),
+                                    TextInput::make('as_whole')->label('Stocks as whole')->required()->placeholder('boxes, bottles, etc.')->default($record->stock_as_whole)->disabled(),
                                     TextInput::make('per_stock')->label('Label per Stocks')->required()->placeholder('ML, L, PCS, etc.')->default($record->label_per_stock),
                                     TextInput::make('total_stocks')->required()->numeric()->default($record->total_stocks),
                                 ])
@@ -90,7 +91,7 @@ class MedicineList extends Component implements Tables\Contracts\HasTable
                         'name' => $data['name'],
                         'serial_code' => $data['serial_code'],
                         'description' => $data['description'],
-                        'category' => $data['category'],
+                        'medicine_category_id' => $data['category_id'],
                         'price' => $data['price'],
                         'stock_as_whole' => $data['as_whole'],
                         'label_per_stock' => $data['per_stock'],
@@ -108,12 +109,8 @@ class MedicineList extends Component implements Tables\Contracts\HasTable
                                 TextInput::make('serial_code')->required(),
                                 TextInput::make('description')->required(),
                                 TextInput::make('price')->required()->numeric(),
-                                Select::make('category')->label('Category')
-                                    ->options([
-                                        'Antibiotic' => 'Antibiotic',
-                                        'reviewing' => 'Reviewing',
-                                        'published' => 'Published',
-                                    ]),
+                                Select::make('category_id')->label('Category')
+                                    ->options(MedicineCategory::all()->pluck('name', 'id')),
                                 TextInput::make('as_whole')->label('Stocks as whole')->required()->placeholder('boxes, bottles, etc.'),
                                 TextInput::make('per_stock')->label('Label per Stocks')->required()->placeholder('ML, L, PCS, etc.'),
                                 TextInput::make('total_stocks')->required()->numeric(),

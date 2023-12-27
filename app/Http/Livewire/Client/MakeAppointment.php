@@ -5,6 +5,9 @@ namespace App\Http\Livewire\Client;
 use App\Models\ClientAppointment;
 use App\Models\Doctor;
 use App\Models\Pets;
+use App\Models\Service;
+use App\Models\ServiceTransaction;
+use Carbon\Carbon;
 use Livewire\Component;
 use Filament\Forms;
 use Illuminate\Contracts\View\View;
@@ -19,7 +22,7 @@ class MakeAppointment extends Component implements Forms\Contracts\HasForms
 {
     use Forms\Concerns\InteractsWithForms;
     public $appointment_modal = false;
-    public $pet_id, $appointment_date, $description, $doctor_id;
+    public $pet_id, $appointment_date, $description, $doctor_id, $service_id;
 
     public $events = [];
 
@@ -42,22 +45,27 @@ class MakeAppointment extends Component implements Forms\Contracts\HasForms
         )->tojson();
         return view('livewire.client.make-appointment', [
             'pets' => Pets::where('user_id', auth()->user()->id)->get(),
+            'doctors' => Doctor::all(),
+            'services' => Service::all(),
         ]);
     }
 
     protected function getFormSchema(): array
     {
         return [
-            Select::make('doctor_id')
-                ->label('Doctor')
-                ->options(Doctor::pluck('fullname', 'id'))->reactive()
-                ->searchable(),
-
+            // Select::make('doctor_id')
+            //     ->label('Doctor')
+            //     ->options(Doctor::pluck('fullname', 'id'))->reactive()
+            //     ->searchable(),
             Fieldset::make('APPOINTMENT INFORMATION')
                 ->schema([
                     Select::make('pet_id')
                         ->label('Pet')
                         ->options(Pets::where('user_id', auth()->user()->id)->pluck('name', 'id'))
+                        ->searchable(),
+                    Select::make('service_id')
+                        ->label('Service')
+                        ->options(Service::all()->pluck('name', 'id'))
                         ->searchable(),
                     DateTimePicker::make('appointment_date')->hoursStep(2)->reactive()
                         ->minutesStep(15)
@@ -76,18 +84,23 @@ class MakeAppointment extends Component implements Forms\Contracts\HasForms
             'appointment_date' => 'required',
             'description' => 'required',
         ]);
-        ClientAppointment::create([
+        $client = ClientAppointment::create([
             'pet_id' => $this->pet_id,
             'doctor_id' => $this->doctor_id,
-            'appointment_date' => $this->appointment_date,
+            'appointment_date' => Carbon::parse($this->appointment_date),
             'description' => $this->description,
             'user_id' => auth()->user()->id,
+        ]);
+
+        ServiceTransaction::create([
+            'client_appointment_id' => $client->id,
+            'service_id' => $this->service_id,
         ]);
 
         $this->appointment_modal = false;
 
         sweetalert()->addSuccess('Appointment has been submitted');
-        return redirect()->route('client.dashboard');
+        return redirect()->route('client.appointments');
     }
     public function updatedDoctorId()
     {

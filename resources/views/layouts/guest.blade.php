@@ -17,7 +17,7 @@
 </head>
 
 <body class="font-sans text-gray-900 bg-gray-800 antialiased relative">
-    <img src="https://images.unsplash.com/photo-1596272875729-ed2ff7d6d9c5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=870&q=80"
+    <img src="{{ asset('images/bg-dashboard.jpg') }}"
         class="absolute top-0 left-0 w-full h-full object-cover z-0 opacity-30" alt="">
     <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 relative">
 

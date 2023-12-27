@@ -27,10 +27,10 @@ class Inventory extends Component implements Tables\Contracts\HasTable
     {
         return [
             ViewColumn::make('status')->label('NAME')->view('admin.filament.medicine')->searchable('name'),
-            Tables\Columns\TextColumn::make('category')->label('CATEGORY')->searchable(),
+            Tables\Columns\TextColumn::make('medicine_category.name')->label('CATEGORY')->searchable(),
             Tables\Columns\TextColumn::make('total_stocks')->label('TOTAL STOCKS')->searchable()->formatStateUsing(
                 function ($record) {
-                    return $record->total_stocks . ' ' . $record->stock_as_whole;
+                    return $record->total_stocks;
                 }
             ),
         ];
@@ -49,10 +49,10 @@ class Inventory extends Component implements Tables\Contracts\HasTable
                     ->success()
                     ->send();
             })->form(function ($record) {
-            return [
-                TextInput::make('stock')->required(),
-            ];
-        })->modalWidth('md'),
+                return [
+                    TextInput::make('stock')->required()->numeric()->mask(fn(TextInput\Mask $mask) => $mask->pattern('00000000000')),
+                ];
+            })->modalWidth('md'),
         ];
     }
 

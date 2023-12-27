@@ -9,8 +9,7 @@
                             <div class="relative overflow-hidden shadow-xl">
                                 <div class="absolute inset-0">
                                     <img class="object-cover w-full h-full opacity-90"
-                                        src="https://images.unsplash.com/photo-1596272875729-ed2ff7d6d9c5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=870&q=80"
-                                        alt="">
+                                        src="{{ asset('images/bg-dashboard.jpg') }}" alt="">
                                     <div class="absolute inset-0 bg-gray-800 mix-blend-multiply"></div>
                                 </div>
                                 <div class="relative px-4 py-16 sm:px-6 sm:py-24 lg:py-52 lg:px-8">
@@ -45,4 +44,5 @@
             </div>
         </section>
     </div>
+    <livewire:client-dashboard />
 </x-client-layout>

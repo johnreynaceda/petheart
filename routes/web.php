@@ -15,7 +15,15 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    if (auth()->check()) {
+        if (auth()->user()->user_type === 'admin') {
+            return redirect()->route('admin.dashboard');
+        } else {
+            return redirect()->route('client.dashboard');
+        }
+    } else {
+        return view('welcome');
+    }
 });
 
 Route::get('/dashboard', function () {
@@ -25,6 +33,14 @@ Route::get('/dashboard', function () {
         return redirect()->route('client.dashboard');
     }
 })->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::get('/services', function () {
+    return view('pages.services');
+})->name('services');
+
+Route::get('/contacts', function () {
+    return view('pages.contacts');
+})->name('contacts');
 
 //ADMINISTRATOR
 Route::prefix('administrator')->middleware(['auth', 'verified'])->group(function () {
@@ -49,6 +65,19 @@ Route::prefix('administrator')->middleware(['auth', 'verified'])->group(function
     Route::get('/animals', function () {
         return view('admin.animals');
     })->name('admin.animals');
+
+    Route::get('/consultation', function () {
+        return view('admin.consultation');
+    })->name('admin.consultation');
+    Route::get('/consultation/{id}', function () {
+        return view('admin.manage-consultation');
+    })->name('admin.consultation-manage');
+    Route::get('/services', function () {
+        return view('admin.services');
+    })->name('admin.services');
+    Route::get('/appointment-list', function () {
+        return view('admin.appointment-list');
+    })->name('admin.appointment-list');
 });
 
 //client
@@ -65,6 +94,9 @@ Route::prefix('client')->middleware(['auth', 'verified'])->group(function () {
     Route::get('/make-appointments', function () {
         return view('client.make-appointment');
     })->name('client.make-appointments');
+    Route::get('/billing', function () {
+        return view('client.billing');
+    })->name('client.billing');
 
 
 });

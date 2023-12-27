@@ -92,22 +92,23 @@
                                         </span>
                                     </a>
                                 </li>
+
                                 <li>
-                                    <a class="inline-flex items-center w-full px-4 py-2 mt-1  text-gray-200 fill-gray-200 transition duration-200 ease-in-out transform rounded-lg focus:shadow-outline hover:bg-gray-200 hover:scale-95 hover:text-gray-800 hover:fill-gray-800"
-                                        href="#">
+                                    <a class="{{ request()->routeIs('admin.consultation') ? 'bg-gray-200 text-gray-800 fill-gray-800 scale-95' : '' }} inline-flex items-center w-full px-4 py-2 mt-1  text-gray-200 fill-gray-200 transition duration-200 ease-in-out transform rounded-lg focus:shadow-outline hover:bg-gray-200 hover:scale-95 hover:text-gray-800 hover:fill-gray-800"
+                                        href="{{ route('admin.consultation') }}">
                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
                                             class="w-5 h-5 md hydrated">g
                                             <path
-                                                d="M21 9V20.9925C21 21.5511 20.5552 22 20.0066 22H3.9934C3.44495 22 3 21.556 3 21.0082V2.9918C3 2.45531 3.44694 2 3.99826 2H14V8C14 8.55228 14.4477 9 15 9H21ZM21 7H16V2.00318L21 7ZM8 7V9H11V7H8ZM8 11V13H16V11H8ZM8 15V17H16V15H8Z">
+                                                d="M20 2C20.5523 2 21 2.44772 21 3V21C21 21.5523 20.5523 22 20 22H6C5.44772 22 5 21.5523 5 21V19H3V17H5V15H3V13H5V11H3V9H5V7H3V5H5V3C5 2.44772 5.44772 2 6 2H20ZM14 8H12V11H9V13H11.999L12 16H14L13.999 13H17V11H14V8Z">
                                             </path>
                                         </svg>
                                         <span class="ml-4">
-                                            Reports
+                                            Consultation
                                         </span>
                                     </a>
                                 </li>
                             </ul>
-                            <p class="px-4 pt-10 text-xs font-semibold text-gray-400 uppercase">
+                            <p class="px-4 pt-5 text-xs font-semibold text-gray-400 uppercase">
                                 BASE
                             </p>
                             <ul>
@@ -153,11 +154,42 @@
                                         </span>
                                     </a>
                                 </li>
+                                <li>
+                                    <a class="{{ request()->routeIs('admin.services') ? 'bg-gray-200 text-gray-800 fill-gray-800 scale-95' : '' }} inline-flex items-center w-full px-4 py-2 mt-1  text-gray-200 fill-gray-200 transition duration-200 ease-in-out transform rounded-lg focus:shadow-outline hover:bg-gray-200 hover:scale-95 hover:text-gray-800 hover:fill-gray-800"
+                                        href="{{ route('admin.services') }}">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                            class="w-5 h-5 md hydrated">
+                                            <path
+                                                d="M7 5V2C7 1.44772 7.44772 1 8 1H16C16.5523 1 17 1.44772 17 2V5H21C21.5523 5 22 5.44772 22 6V20C22 20.5523 21.5523 21 21 21H3C2.44772 21 2 20.5523 2 20V6C2 5.44772 2.44772 5 3 5H7ZM4 16V19H20V16H4ZM4 14H20V7H4V14ZM9 3V5H15V3H9ZM11 11H13V13H11V11Z">
+                                            </path>
+                                        </svg>
+                                        <span class="ml-3">
+                                            Services
+                                        </span>
+                                    </a>
+                                </li>
                             </ul>
-                            <p class="px-4 pt-10 text-xs font-semibold text-gray-400 uppercase">
+                            <p class="px-4  text-xs font-semibold text-gray-400 uppercase">
                                 OTHERS
                             </p>
                             <ul>
+                                <li>
+                                    <a class="{{ request()->routeIs('admin.appointment-list') ? 'bg-gray-200 text-gray-800 fill-gray-800 scale-95' : '' }} inline-flex items-center w-full px-4 py-2 mt-1  text-gray-200 fill-gray-200 transition duration-200 ease-in-out transform rounded-lg focus:shadow-outline hover:bg-gray-200 hover:scale-95 hover:text-gray-800 hover:fill-gray-800"
+                                        href="{{ route('admin.appointment-list') }}">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                            class="w-5 h-5 md hydrated">
+                                            <path
+                                                d="M19 22H5C3.34315 22 2 20.6569 2 19V3C2 2.44772 2.44772 2 3 2H17C17.5523 2 18 2.44772 18 3V15H22V19C22 20.6569 20.6569 22 19 22ZM18 17V19C18 19.5523 18.4477 20 19 20C19.5523 20 20 19.5523 20 19V17H18ZM16 20V4H4V19C4 19.5523 4.44772 20 5 20H16ZM6 7H14V9H6V7ZM6 11H14V13H6V11ZM6 15H11V17H6V15Z"
+                                                fill="currentColor"></path>
+                                        </svg>
+                                        <span class="ml-3">
+                                            Appointments
+                                        </span>
+                                        <x-badge
+                                            label="{{ \App\Models\ClientAppointment::where('status', 'pending')->count() }}"
+                                            xs dark class="ml-3" />
+                                    </a>
+                                </li>
                                 <li>
                                     <a class="{{ request()->routeIs('admin.calendar') ? 'bg-gray-200 text-gray-800 fill-gray-800 scale-95' : '' }} inline-flex items-center w-full px-4 py-2 mt-1  text-gray-200 fill-gray-200 transition duration-200 ease-in-out transform rounded-lg focus:shadow-outline hover:bg-gray-200 hover:scale-95 hover:text-gray-800 hover:fill-gray-800"
                                         href="{{ route('admin.calendar') }}">
@@ -170,6 +202,9 @@
                                         <span class="ml-3">
                                             Calendar
                                         </span>
+                                        {{-- <x-badge
+                                            label="{{ \App\Models\ClientAppointment::where('status', 'pending')->count() }}"
+                                            xs dark class="ml-3" /> --}}
                                     </a>
                                 </li>
                                 <li>
@@ -200,7 +235,7 @@
                                         </span>
                                     </a>
                                 </li>
-                                <li>
+                                {{-- <li>
                                     <a class="inline-flex items-center w-full px-4 py-2 mt-1  text-gray-200 fill-gray-200 transition duration-200 ease-in-out transform rounded-lg focus:shadow-outline hover:bg-gray-200 hover:scale-95 hover:text-gray-800 hover:fill-gray-800"
                                         href="#">
                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
@@ -213,7 +248,7 @@
                                             Settings
                                         </span>
                                     </a>
-                                </li>
+                                </li> --}}
                             </ul>
                         </nav>
                         <div class="mb-2">
@@ -226,8 +261,7 @@
                                     </p>
                                 </div>
                                 <p class="mt-1 text-xs text-gray-500">
-                                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Quas cupiditate
-                                    laboriosam fugiat.
+                                    Your trusted and reliable Veterinary Clinic.
                                 </p>
                                 <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg"
                                     class="absolute -top-20 -right-10 h-32" viewBox="0 0 786.29468 749.1971"
@@ -387,15 +421,12 @@
                             class="absolute right-0 z-10 w-48 py-1 mt-2 origin-top-right bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
                             role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button"
                             tabindex="-1" style="display: none;">
-                            <a href="#" class="block px-4 py-2 text-sm text-gray-500" role="menuitem"
-                                tabindex="-1" id="user-menu-item-0">
+                            <a href="{{ route('profile.edit') }}" class="block px-4 py-2 text-sm text-gray-500"
+                                role="menuitem" tabindex="-1" id="user-menu-item-0">
                                 Your Profile
                             </a>
 
-                            <a href="#" class="block px-4 py-2 text-sm text-gray-500" role="menuitem"
-                                tabindex="-1" id="user-menu-item-1">
-                                Settings
-                            </a>
+
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
                                 <a href="#"

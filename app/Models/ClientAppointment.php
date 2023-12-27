@@ -24,4 +24,14 @@ class ClientAppointment extends Model
     {
         return $this->belongsTo(Doctor::class);
     }
+
+    public function treatment_plans()
+    {
+        return $this->hasMany(TreamentPlan::class);
+    }
+
+    public function service_transactions()
+    {
+        return $this->hasMany(ServiceTransaction::class);
+    }
 }

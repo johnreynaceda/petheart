@@ -3,7 +3,29 @@
         <div class="grid grid-cols-3 gap-10">
             <div>
                 <div class="bg-gray-100 p-5  relative rounded-xl">
-                    {{ $this->form }}
+                    <div class="flex flex-col space-y-4">
+                        <x-native-select label="Doctor" wire:model="doctor_id">
+                            <option>Select an Option</option>
+                            @foreach ($doctors as $doctor)
+                                <option value="{{ $doctor->id }}">{{ $doctor->fullname }}</option>
+                            @endforeach
+                        </x-native-select>
+                        <x-native-select label="Pets" wire:model="pet_id">
+                            <option>Select an Option</option>
+                            @foreach ($pets as $pet)
+                                <option value="{{ $pet->id }}">{{ $pet->name }}</option>
+                            @endforeach
+                        </x-native-select>
+                        <x-native-select label="Services" wire:model="service_id">
+                            <option>Select an Option</option>
+                            @foreach ($services as $service)
+                                <option value="{{ $service->id }}">{{ $service->name }}</option>
+                            @endforeach
+                        </x-native-select>
+                        <x-datetime-picker label="Appointment Date" without-timezone interval="30" :min="now()"
+                            min-time="08:00" max-time="20:30" wire:model.defer="appointment_date" />
+                        <x-textarea wire:model="description" label="Description" placeholder="" />
+                    </div>
                     <div class="mt-5 flex space-x-2">
                         <x-button label="Submit" wire:click="submitAppointment" spinner="submitAppointment" positive
                             rounded class="font-bold" right-icon="save" />
@@ -52,6 +74,11 @@
                 displayEventTime: true,
                 eventColor: '#1B7B8B',
                 events: JSON.parse(eventData), // Parse the Livewire data
+                eventTimeFormat: {
+                    hour: 'numeric',
+                    minute: '2-digit',
+                    meridiem: 'short'
+                },
             });
 
             calendar.render();

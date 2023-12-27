@@ -18,6 +18,7 @@ return new class extends Migration {
             $table->string('password');
             $table->rememberToken();
             $table->string('user_type')->default('client');
+            $table->string('profile_path')->nullable();
             $table->timestamps();
         });
     }

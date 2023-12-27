@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Client;
 
+use App\Models\ClientAppointment;
 use Livewire\Component;
 use Filament\Tables;
 use App\Models\Pets;
@@ -15,6 +16,7 @@ use Filament\Tables\Columns\ViewColumn;
 use Filament\Notifications\Notification;
 use Filament\Forms\Components\FileUpload;
 use Livewire\WithFileUploads;
+use Filament\Forms\Components\ViewField;
 
 class PetsList extends Component implements Tables\Contracts\HasTable
 {
@@ -22,13 +24,17 @@ class PetsList extends Component implements Tables\Contracts\HasTable
     use WithFileUploads;
 
     public $attachment = [];
+    public $pet_details = false;
+    public $pet_data = [];
+
+    public $pet_id;
     public $add_modal = false;
     public $edit_modal = false;
     public $name, $species, $breed, $color, $gender, $weight;
 
     protected function getTableQuery(): Builder
     {
-        return Pets::query();
+        return Pets::query()->where('user_id', auth()->user()->id);
     }
 
     protected function getTableContentGrid(): ?array
@@ -44,16 +50,17 @@ class PetsList extends Component implements Tables\Contracts\HasTable
         return [
             Fieldset::make('PETS INFORMATION')
                 ->schema([
-                    TextInput::make('name')->required(),
-                    TextInput::make('species')->required(),
-                    TextInput::make('breed')->required(),
-                    TextInput::make('color')->required()->numeric(),
+                    TextInput::make('name')->required()->placeholder($this->pet_data != null ? $this->pet_data->name : ''),
+                    TextInput::make('species')->required()->placeholder($this->pet_data != null ? $this->pet_data->species : ''),
+                    TextInput::make('breed')->required()->placeholder($this->pet_data != null ? $this->pet_data->breed : ''),
+                    TextInput::make('color')->required()->placeholder($this->pet_data != null ? $this->pet_data->color : ''),
                     Select::make('gender')->label('Gender')
                         ->options([
                             'Male' => 'Male',
                             'Female' => 'Female',
-                        ]),
-                    TextInput::make('weight')->required()->numeric(),
+                        ])->placeholder($this->pet_data != null ? $this->pet_data->gender : ''),
+                    TextInput::make('weight')->required()->numeric()->placeholder($this->pet_data != null ? $this->pet_data->weight : ''),
+                    // ViewField::make('pic')->view('filament.fileupload')->columnSpan(2),
                     FileUpload::make('attachment')->label('Photo')->image()->reactive()
                 ])
                 ->columns(2)
@@ -108,44 +115,59 @@ class PetsList extends Component implements Tables\Contracts\HasTable
         ];
     }
 
+    public function updateRecord()
+    {
+        $data = Pets::where('id', $this->pet_data->id)->first();
+        if ($this->attachment != null) {
+            foreach ($this->attachment as $key => $item) {
+                $data->update([
+                    'name' => $this->name,
+                    'breed' => $this->breed,
+                    'species' => $this->species,
+                    'color' => $this->color,
+                    'gender' => $this->gender,
+                    'weight' => $this->weight,
+                    'photo_path' => $item->store('Pets', 'public'),
+                ]);
+                Notification::make()
+                    ->title('Added successfully')
+                    ->success()
+                    ->send();
+
+                $this->reset('name', 'species', 'breed', 'color', 'weight', 'attachment');
+
+                $this->edit_modal = false;
+            }
+        }
+    }
+
     protected function getTableActions(): array
     {
         return [
-            Tables\Actions\Action::make('view')->icon('heroicon-o-eye')->color('warning'),
+            Tables\Actions\Action::make('history')->icon('heroicon-o-clock')->color('warning')->action(
+                function ($record) {
+                    $this->pet_id = $record->id;
+                    $this->pet_data = Pets::where('id', $record->id)->first();
+                    $this->pet_details = true;
+                }
+            ),
             Tables\Actions\Action::make('edit')->icon('heroicon-o-pencil-alt')->color('success')->action(function ($record, $data) {
-                $record->update([
-                    'name' => $data['name'],
-                    'species' => $data['species'],
-                    'breed' => $data['breed'],
-                    'color' => $data['color'],
-                    'gender' => $data['gender'],
-                    'weight' => $data['weight'],
-                ]);
-                Notification::make()
-                    ->title('Updated successfully')
-                    ->success()
-                    ->send();
-            })->form(
-                    function ($record) {
-                        return [
-                            Fieldset::make('PETS INFORMATION')
-                                ->schema([
-                                    TextInput::make('name')->required()->default($record->name),
-                                    TextInput::make('species')->required()->default($record->species),
-                                    TextInput::make('breed')->required()->default($record->breed),
-                                    TextInput::make('color')->required()->numeric()->default($record->color),
-                                    Select::make('gender')->label('Gender')
-                                        ->options([
-                                            'Male' => 'Male',
-                                            'Female' => 'Female',
-                                        ])->default($record->gender),
-                                    TextInput::make('weight')->required()->numeric()->default($record->weight),
 
-                                ])
-                                ->columns(2)
-                        ];
-                    }
-                )->modalHeading('Edit Pet'),
+                $this->pet_data = $record;
+                $this->edit_modal = true;
+                // $record->update([
+                //     'name' => $data['name'],
+                //     'species' => $data['species'],
+                //     'breed' => $data['breed'],
+                //     'color' => $data['color'],
+                //     'gender' => $data['gender'],
+                //     'weight' => $data['weight'],
+                // ]);
+                // Notification::make()
+                //     ->title('Updated successfully')
+                //     ->success()
+                //     ->send();
+            })->modalHeading('Edit Pet'),
             Tables\Actions\DeleteAction::make('delete')
         ];
     }
@@ -182,6 +204,8 @@ class PetsList extends Component implements Tables\Contracts\HasTable
 
     public function render()
     {
-        return view('livewire.client.pets-list');
+        return view('livewire.client.pets-list', [
+            'appointments' => ClientAppointment::where('pet_id', $this->pet_id)->get(),
+        ]);
     }
 }

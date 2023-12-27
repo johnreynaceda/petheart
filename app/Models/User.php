@@ -21,7 +21,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'user_type'
+        'user_type',
+        'profile_path'
     ];
 
     /**
@@ -52,5 +53,10 @@ class User extends Authenticatable
     public function clientAppointments()
     {
         return $this->hasMany(ClientAppointment::class);
+    }
+
+    public function user_information()
+    {
+        return $this->hasOne(UserInformation::class);
     }
 }

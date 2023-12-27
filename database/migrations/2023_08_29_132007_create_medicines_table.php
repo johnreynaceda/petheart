@@ -15,7 +15,7 @@ return new class extends Migration {
             $table->string('name');
             $table->string('serial_code');
             $table->longText('description');
-            $table->string('category');
+            $table->foreignId('medicine_category_id');
             $table->string('price');
             $table->string('stock_as_whole');
             $table->string('label_per_stock');
